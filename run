@@ -15,5 +15,5 @@ set -e
 #ansible-vault encrypt group_vars/all/secrets.yml --vault-password-file ~/.vault_password_farrell
 
 # Cloud
-ansible-playbook playbook.yml --vault-password-file ~/.vault_password_farrell
+ansible-playbook playbook.yml --vault-password-file ~/.vault_password
 

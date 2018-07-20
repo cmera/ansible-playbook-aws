@@ -6,7 +6,7 @@
   vars:
 
     ## localhost ##
-    org_name:       'f4rr3ll'
+    org_name:       'aws-demo'
 
     # localhost profile name
     aws_profile:    'aws.{{ org_name | lower }}'
@@ -17,9 +17,9 @@
     #aws_secret_key:      # group_vars/all/secrets.yml
 
     # aws.networking
-    aws_region:     'us-east-2'
-    vpc_name:       'Staging'
-    vpc_cidr_2:     '185'
+    aws_region:     'us-east-1'
+    vpc_name:       'Development'
+    vpc_cidr_2:     '18'
     vpc_cidr_block: '10.{{vpc_cidr_2}}.0.0/16'
 
     public_subnet_az1_cidr:  '10.{{vpc_cidr_2}}.10.0/24'
@@ -35,9 +35,9 @@
     docker_instance_type:     't2.small'
 
     # aws.db.*
-    mysql_instance_type:         't2.small'
+#    mysql_instance_type:         't2.small'
     #mysql_password:             # group_vars/all/secrets.yml
-    postgres_instance_type:         't2.small'
+    #postgres_instance_type:         't2.small'
     #postgres_password:             # group_vars/all/secrets.yml
 
   roles:
@@ -46,5 +46,5 @@
     - aws.ec2.privkey
     - aws.ec2.bastion
     - aws.ec2.instance
-    - aws.db.postgres
-    - aws.cache.redis
+#    - aws.db.postgres
+#    - aws.cache.redis

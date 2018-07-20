@@ -1,21 +1,21 @@
 ---
 
 # product-code from https://wiki.centos.org/Cloud/AWS
-- name:               Get AMI for CentOS in region
-  ec2_ami_find:
+- name:               Get AMI for Ubuntu in region
+  ec2_ami_facts:
     region:           "{{ aws_region }}"
     profile:          "{{ aws_profile }}"
-    owner:            "aws-marketplace"
-    product_code:     "aw0evgkw8e5c1q413zgy5pjce"
-    no_result_action: fail
-  register: ami_find
+    owners:           "aws-marketplace"
+    filters:
+      name: "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"
+  no_result_action: fail
+  register: amis
 
-- debug: var=ami_find.results[0]
+# - debug: var="{{ amis.images | sort(attribute='creation_date') | last }}"
 
 - name:               Set AMI ID in variable
   set_fact:
-    bastion_instance_ami: "{{ ami_find.results[0].ami_id }}"
-
+    latest_ami:           "{{ amis.images | sort(attribute='creation_date') | last }}"
 
 - name:               Create Bastion Host Security Group
   ec2_group:
@@ -44,14 +44,14 @@
     profile:          "{{ aws_profile }}"
     key_name:         "{{ aws_key_name }}"
     instance_type:    "{{ bastion_instance_type }}"
-    image:            "{{ bastion_instance_ami }}"
+    image:            "{{ latest_ami.image_id }}"
     region:           "{{ aws_region }}"
     vpc_subnet_id:    "{{ public_subnet_az1_id }}"
     volumes:
       - device_name: /dev/sda1
         volume_type: gp2
-        volume_size: 8
-        encrypted: true
+        volume_size: 16
+#        encrypted: false
         delete_on_termination: true
     wait:             yes
     group_id:         ["{{ bastion_group_id }}"]
