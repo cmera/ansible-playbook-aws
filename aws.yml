@@ -1,0 +1,38 @@
+---
+
+# ansible-playbook aws.yml
+
+- hosts: localhost
+  vars:
+
+    ## localhost ##
+    org_name:       'aws-demo'
+
+    # localhost profile name
+    aws_profile:    'aws.{{ org_name | lower }}'
+    # ssh key name
+    aws_key_name:   'ansible_{{ org_name | lower }}'
+
+    #aws_access_key:      # group_vars/all/secrets.yml
+    #aws_secret_key:      # group_vars/all/secrets.yml
+
+    # aws.networking
+    aws_region:     'us-east-1'
+    vpc_name:       'Development'
+    vpc_cidr_2:     '18'
+    vpc_cidr_block: '10.{{vpc_cidr_2}}.0.0/16'
+
+    public_subnet_az1_cidr:  '10.{{vpc_cidr_2}}.10.0/24'
+    private_subnet_az1_cidr: '10.{{vpc_cidr_2}}.11.0/24'
+
+    # aws.ec2.bastion
+    bastion_instance_type:    't2.micro'
+
+    # aws.ec2.webapp
+    docker_instance_type:     't2.small'
+
+  roles:
+    - aws.profile
+    - aws.networking
+    - aws.ec2.privkey
+    - aws.ec2.bastion

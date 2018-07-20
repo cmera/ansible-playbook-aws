@@ -57,7 +57,8 @@
     instance_type:    "{{ docker_instance_type }}"
     image:            "{{ latest_ami.image_id }}"
     region:           "{{ aws_region }}"
-    vpc_subnet_id:    "{{ private_subnet_az1_id }}"
+# simplify by adding to public subnet
+    vpc_subnet_id:    "{{ public_subnet_az1_id }}"
     #volumes:
     #  - device_name: /dev/sda1
     #    volume_type: gp2
