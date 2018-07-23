@@ -1,0 +1,102 @@
+---
+
+# product-code from AWSCLI Marketplace Search
+# Tying to 16.04 only with filter.
+- name:               Get AMI for Ubuntu 16.04 in region
+  ec2_ami_facts:
+    region:           "{{ aws_region }}"
+    profile:          "{{ aws_profile }}"
+    owners:           "aws-marketplace"
+    filters:
+      name: "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"
+  no_result_action: fail
+  register: amis
+
+# - debug: var="{{ amis.images | sort(attribute='creation_date') | last }}"
+
+- name:               Set AMI ID in variable
+  set_fact:
+    latest_ami:           "{{ amis.images | sort(attribute='creation_date') | last }}"
+
+- name:               Create Laravel Host Security Group
+  ec2_group:
+    name:             "Laravel Host"
+    #tags:                              # Not Supported
+    #  Name: "name"
+    description:      "Port 22"
+    vpc_id:           "{{ vpc_id }}"
+    region:           "{{ aws_region }}"
+    profile:          "{{ aws_profile }}"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+    state:            "present"
+  register: my_laravel_group
+
+- name:               Set Laravel Host Security Group ID in variable
+  set_fact:
+    laravel_group_id: "{{ my_laravel_group.group_id }}"
+
+
+- name:               Create Laravel Server
+  ec2:
+    profile:          "{{ aws_profile }}"
+    key_name:         "{{ aws_key_name }}"
+    instance_type:    "{{ laravel_instance_type }}"
+    image:            "{{ latest_ami.image_id }}"
+    region:           "{{ aws_region }}"
+    vpc_subnet_id:    "{{ public_subnet_az1_id }}"
+    volumes:
+      - device_name: /dev/sda1
+        volume_type: gp2
+        volume_size: 16
+#        encrypted: false
+        delete_on_termination: true
+    wait:             yes
+    group_id:         ["{{ laravel_group_id }}"]
+    exact_count:      1
+    count_tag:
+      laravel:        "{{ vpc_name | lower }}"
+    instance_tags:
+      Name:           "{{vpc_name}} Laravel Host"
+      laravel:        "{{ vpc_name | lower }}"
+  register: laravel_ec2s
+
+- debug: var=laravel_ec2s.group_id
+
+- name:               Set Laravel Host ID in variable
+  set_fact:
+    laravel_ec2: "{{ laravel_ec2s.tagged_instances[0] }}"
+
+- debug: var=laravel_ec2
+
+# Attach Elastic IP
+- name:               Apply Elastic IP to Laravel Host
+  ec2_eip:
+    region:           "{{ aws_region }}"
+    profile:          "{{ aws_profile }}"
+    device_id:        "{{ laravel_ec2.id }}"
+    state:            "present"
+  register: laravel_eip
+
+- debug: var=laravel_eip
+
+# http://docs.ansible.com/ansible/intro_inventory.html#id13
+#- name: Add new instance to host group
+#  add_host:
+#    hostname: "{{ laravel_ec2.public_ip }}"
+#    groupname: launched
+#  changed_when: false
+#
+#- name: Wait for SSH to come up (60sec)
+#  wait_for:
+#    host: "{{ laravel_ec2.public_dns_name }}"
+#    port: 22
+#    delay: 60
+#    timeout: 320
+#    state: started
+
+# TODO laravel setup - lockdown
+# ssh user centos

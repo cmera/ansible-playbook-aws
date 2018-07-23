@@ -3,24 +3,29 @@
 ## Requirements
 - ansible >= 2.3
 - AWS Account w/ IAM access
+- Accept EULA for AWS Marketplace
+- https://aws.amazon.com/marketplace/pp?sku=csv6h7oyg29b7epjzg7qdr7no
+
 
 ## Setup
 ```bash
-# 2017-04
-brew install python
-sudo -H pip install --upgrade ansible
-sudo -H pip install --ignore-installed six	# fix bug with boto
-sudo -H pip install --ignore-installed python-dateutil	# fix bug with botocore
-sudo -H pip install --upgrade botocore boto boto3 passlib
-sudo -H pip install --upgrade --user awscli
+# 2018-07
+virtualenv ~/.venv
+source ~/.venv/bin/activate
+
+(.venv) sudo -H pip install --upgrade ansible
+(.venv) sudo -H pip install --ignore-installed six	# fix bug with boto
+(.venv) sudo -H pip install --ignore-installed python-dateutil	# fix bug with botocore
+(.venv) sudo -H pip install --upgrade botocore boto boto3 passlib
+(.venv) sudo -H pip install --upgrade --user awscli
 
 # bashrc
-export PYTHONPATH=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
-export PATH=~/Library/Python/2.7/bin:$PATH
+#xport PYTHONPATH=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+#export PATH=~/Library/Python/2.7/bin:$PATH
 
 # Other deps
 # mysql_*
-sudo -H pip install --upgrade MySQL-python
+# sudo -H pip install --upgrade MySQL-python
 ```
 
 ### Set org_id
@@ -32,8 +37,8 @@ Keep it lowercase.
 These step will allow you to create the necessary policies for all required ansible commands.
 Repeat each for all files in `docs/aws_policies`.
 
-1. Click [Policies](https://console.aws.amazon.com/iam/home#/policies) 
-1. Click `Create Policy` 
+1. Click [Policies](https://console.aws.amazon.com/iam/home#/policies)
+1. Click `Create Policy`
 1. Find `Create Your Own Policy`
 1. Click `Select`.
 1. Field `Policy Name`: Enter something like `ansible_{{file_name}}`.
@@ -42,7 +47,7 @@ Repeat each for all files in `docs/aws_policies`.
 
 ### IAM Group
 
-1. Click [Groups](https://console.aws.amazon.com/iam/home#/groups) 
+1. Click [Groups](https://console.aws.amazon.com/iam/home#/groups)
 1. Click `Create New Group`.
 1. Enter `ansible`.
 1. Click `Next Step`.

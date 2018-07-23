@@ -9,8 +9,12 @@ private_subnet_az1_id:
 public_subnet_az2_id:
 private_subnet_az2_id:
 
+# aws.ec2.laravel
+
+laravel_host_group_id:
+laravel_access_group_id:
+
 # aws.ec2.bastion
+
 bastion_host_group_id:
 bastion_access_group_id:
-
-# aws.ec2.webapp
