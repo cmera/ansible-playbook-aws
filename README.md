@@ -35,7 +35,7 @@ Keep it lowercase.
 
 
 ### Setup secrets
-1. Create `~/.vault_password_{{ org_id }}` with the contents being a long random password.
+1. Create `~/.vault_password` with the contents being a long random password.
 
 2. Create `group_vars/all/secrets.yml`.
 
@@ -56,16 +56,13 @@ db_password: ''
 ## Run
 `./run`
 
-## 1. AWS VPC
+## AWS VPC
 - [x] Setup localhost AWS profile
 - [x] Scaffold VPC networking
 - [x] Setup AWS private ssh key
+- [ ] Fix EIP / Ansible Bug
 
 ### TODO
-- [ ] Enable IPv6
-- [ ] BUG NAT deploys failed
-- [ ] Double check route table has working nat and matches
-- [ ] BUG DNS 8.8.8.8 not reachable from private subnet
 - [ ] Add `delete on termination` to ec2 volumes
 - [ ] Encrypted RDS not supported in ansible + boto - https://github.com/boto/boto/pull/3027
 
@@ -74,6 +71,6 @@ db_password: ''
 - [ ] update access policy (ansible user) https://awspolicygen.s3.amazonaws.com/policygen.html
 
 ## TODO
-- [ ] docker swarm
-- [ ] elastic-cloud ansible
-- [ ] jenkins ansible
+- [ ] laravel server setup
+- [ ] rds setup
+- [ ] laravel app deploy
