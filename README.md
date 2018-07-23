@@ -3,7 +3,7 @@
 ## Requirements
 - ansible >= 2.3
 - AWS Account w/ IAM access
-- Accept EULA for AWS Marketplace
+- (Accept EULA for AWS Marketplace)[AWS.md]
 - https://aws.amazon.com/marketplace/pp?sku=csv6h7oyg29b7epjzg7qdr7no
 
 
