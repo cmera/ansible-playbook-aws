@@ -1,11 +1,5 @@
 ---
 
-# http://jeremievallee.com/2016/07/27/aws-vpc-ansible/
-
-# TODO
-# - EC2 Bastion for ssh access
-# - Note all web servers can be on teh private network and use ELB
-
 # VPC
 - name:               Create VPC
   ec2_vpc_net:
@@ -60,12 +54,15 @@
   ec2_eip:
     region:           "{{ aws_region }}"
     profile:          "{{ aws_profile }}"
+    in_vpc:           yes
     state:            "present"
   register: eip_az1
 
+- debug: var=eip_az1.allocation_id
+
 - name:               Set Elastic IP in variable [AZ1]
   set_fact:
-    my_elastic_az1_ip:    "{{ eip_az1.public_ip }}"
+    my_elastic_az1_ip:    "{{ eip_az1.allocation_id }}"
 
 # Subnet Routes
 - name:               Set up public subnet route table

@@ -6,7 +6,7 @@
   vars:
 
     ## localhost ##
-    org_name:       'aws-demo'
+    org_name:       'aws-laravel'
 
     # localhost profile name
     aws_profile:    'aws.{{ org_name | lower }}'
@@ -19,20 +19,17 @@
     # aws.networking
     aws_region:     'us-east-1'
     vpc_name:       'Development'
-    vpc_cidr_2:     '18'
+    vpc_cidr_2:     '51'
     vpc_cidr_block: '10.{{vpc_cidr_2}}.0.0/16'
 
     public_subnet_az1_cidr:  '10.{{vpc_cidr_2}}.10.0/24'
     private_subnet_az1_cidr: '10.{{vpc_cidr_2}}.11.0/24'
 
-    # aws.ec2.bastion
-    bastion_instance_type:    't2.micro'
-
-    # aws.ec2.webapp
-    docker_instance_type:     't2.small'
+    # aws.ec2.laravel
+    laravel_instance_type:    't2.micro'
 
   roles:
     - aws.profile
     - aws.networking
     - aws.ec2.privkey
-    - aws.ec2.bastion
+    - aws.ec2.laravel
