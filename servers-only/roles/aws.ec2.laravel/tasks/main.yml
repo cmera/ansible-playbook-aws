@@ -1,0 +1,28 @@
+---
+- name: Install PHP and extensions
+  apt: name={{ item }} state=present update_cache=yes
+  tags: php
+  with_items:
+    - php7.2
+    - php7.2-zip
+    - php7.2-pdo
+    - php7.2-mbstring
+    - php7.2-tokenizer
+    - php7.2-xml
+    - php7.2-mysqlnd
+    - php7.2-opcache
+- name: Install php-fpm
+  tags: php-fpm
+  apt: name=php7.2-fpm state=present
+
+- name: Make sure php-fpm is running
+  tags: php-fpm
+  service: name=php7.2-fpm state=started enabled=yes
+
+- name: Make sure php-fpm is configured
+  tags: php-fpm
+  template: src=php-fpm.conf.j2 dest=/etc/php/7.2/fpm/pool.d/www.conf
+  notify:
+    - Restart php-fpm (Debian)
+
+- include: composer.yml
