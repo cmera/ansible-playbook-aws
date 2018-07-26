@@ -1,0 +1,33 @@
+- name: Ensure /var/www/html directory has correct permissions.
+  file:
+    path: /var/www/html
+    state: directory
+    owner: www-data
+    group: www-data
+
+- name: Ensure .ssh directory exists.
+  file:
+    path: /var/www/.ssh
+    state: directory
+    mode: 0700
+    owner: www-data
+    group: www-data
+
+- name: Ensure GitHub deploy key is present on the server.
+  copy:
+    content: "{{ deploy_private_key }}"
+    dest: /var/www/.ssh/deploy_key
+    mode: 0600
+    owner: www-data
+    group: www-data
+
+- name: Ensure setfacl support is present.
+  package: name=acl
+
+- name: Clone the code repository to the docroot.
+  git:
+    repo: "{{ repository }}"
+    dest: "{{ clone_dir }}"
+    accept_hostkey: yes
+    key_file: /var/www/.ssh/deploy_key
+  become_user: www-data
