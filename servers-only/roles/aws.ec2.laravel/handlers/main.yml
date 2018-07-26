@@ -1,0 +1,2 @@
+- name: Restart php-fpm (Debian)
+  service: name=php7.2-fpm state=restarted

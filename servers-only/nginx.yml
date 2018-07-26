@@ -1,0 +1,59 @@
+---
+# Example shows using the local machine still
+# Remove 'connection' and set hosts to 'remote' for a remote connection
+- hosts: remote
+  user: ubuntu
+  become: yes
+  become_user: root
+  vars:
+   - docroot: /var/www/app1/public
+   - ansible_processor_cores: '4'
+  tasks:
+   - name: Add Nginx Repository
+     apt_repository:
+       repo: ppa:nginx/stable
+       state: present
+     register: ppastable
+
+   - name: Install Nginx
+     apt:
+       pkg: nginx
+       state: present
+       update_cache: true
+     when: ppastable is success
+     notify:
+      - Start Nginx
+
+   - name: Create Web Root
+     file:
+      path: '{{ docroot }}'
+      mode: 775
+      state: directory
+      owner: www-data
+      group: www-data
+     notify:
+      - Reload Nginx
+
+   - name: Make sure nginx is configured
+     tags: nginx
+     template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+     notify:
+       - Reload Nginx
+
+   - name: Make sure nginx virtual hosts are configured
+     tags: nginx
+     template: src=nginx-virtual.conf.j2 dest=/etc/nginx/conf.d/test.conf
+     notify:
+       - Reload Nginx
+
+  handlers:
+   - name: Start Nginx
+     service:
+       name: nginx
+       state: started
+
+   - name: Reload Nginx
+     service:
+       name: nginx
+       state: reloaded
+
