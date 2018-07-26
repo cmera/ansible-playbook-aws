@@ -33,3 +33,4 @@
     - aws.networking
     - aws.ec2.privkey
     - aws.ec2.laravel
+    - aws.ec2.php

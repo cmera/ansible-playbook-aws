@@ -1,0 +1,13 @@
+- name: Install PHP and extensions
+  apt: name={{ item }} state=installed update_cache=yes
+  become: true
+  tags: php
+  with_items:
+    - php7.2
+    - php7.2-zip
+    - php7.2-pdo
+    - php7.2-mbstring
+    - php7.2-tokenizer
+    - php7.2-xml
+    - php7.2-mysqlnd
+    - php7.2-opcache
