@@ -12,3 +12,4 @@
     clone_dir: /tmp/{{ project_name }}
   roles:
     - aws.ec2.nodejs
+    - aws.ec2.s3

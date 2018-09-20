@@ -1,0 +1,7 @@
+---
+aws_cli_user: '{{ ansible_user }}'
+aws_cli_group: '{{ ansible_user }}'
+aws_output_format: 'json'
+aws_region: 'us-east-1'
+aws_access_key_id: 'AKIAICE6XVDYCVC7HGXA'
+aws_secret_access_key: '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'
